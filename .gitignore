@@ -1,0 +1,14 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+# data
+testdata/
+
+# out
+out/
+output/
+out_test/
+
+# current_iles
+current_iles/
+
