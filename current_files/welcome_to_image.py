@@ -5,19 +5,20 @@ import numpy as np
 from varname.helpers import debug
 
 
-img_path = ('testdata\jeezus.jpg')
+img_path = ('c:/cod/repozit_001/test_data\medved.jpg')
 debug(img_path)
 img = cv2.imread(img_path)
 img2draw =img.copy()
-img2draw = cv2.resize(img2draw, dsize=None, fx=s, fy=0.5)
+img2draw = cv2.resize(img2draw, dsize=None, fx=0.5, fy=0.5)
 debug(img.shape)
 img_height, img_width, img_channels =img2draw.shape
 debug(img_height)
 debug(img_width)
 img_centr_xy = (int(img_width/2), int(img_height/2))
-img2draw = cv2.circle(img2draw, center=(200, 100), radius=5, color=(0, 200, 0), thickness=3 )
+debug(img_centr_xy)
+img2draw = cv2.circle(img2draw, center=(172, 307), radius=50, color=(0, 200, 0), thickness=3 )#рисуем круг
 
-cv2.imshow('testdata/jeezus.jpg', img2draw)
+cv2.imshow('medved.jpg', img2draw)
 cv2.waitKey(-1)
 
 

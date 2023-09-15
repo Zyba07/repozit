@@ -3,7 +3,7 @@ import numpy as np
 import cv2
 from typing import List, Dict
 from varname.helpers import debug
-import random
+
 
 def load_gt(dataset_path: str): 
     gt_path = None
@@ -21,8 +21,6 @@ def load_gt(dataset_path: str):
     for i in range(len(gt_data)): 
         gt_object = gt_data[i]
         gt_object = gt_object.replace('\n', '').split(', ')
-    #     if i < 5 :
-    #         debug(gt_object)
         for i in range(len(gt_object)):
             gt_object[i] = int(gt_object[i])
         frame_number, player_id, top_left_x, top_left_y, width, height, _, _, _ = gt_object 
@@ -52,8 +50,6 @@ def run_dataset(dataset_path:str , outdir: str):
     for players in gt_objects.values():
         if max(players.keys()) > max_player_id:
             max_player_id = max(players.keys())
-    players_colors_dict = random_players_colors(max_player_id)
-
     for frame_number, frame_objects in gt_objects.items():
         try: 
             img_path = img_paths[frame_number]
@@ -63,48 +59,20 @@ def run_dataset(dataset_path:str , outdir: str):
         img2draw = img.copy() 
         for player_id, player_bbox in frame_objects.items():
             cv_bbox = xywh2x1y1x2y2(player_bbox)
-            # img_centr = 
             cv2.rectangle(
                     img2draw, 
                     #top left 
                     pt1=(cv_bbox[0], cv_bbox[1]),
                     #bottom rigth
                     pt2=(cv_bbox[2], cv_bbox[3]),
-                    color=players_colors_dict[player_id],
+                    color=[player_id],
                     thickness=2)
-            cv2.putText(
-                img=img2draw,
-                text='player_id-' + str(player_id),
-                org=(cv_bbox[0], cv_bbox[1]),
-                fontFace=cv2.FONT_HERSHEY_PLAIN,
-                fontScale=1.3,
-                color=players_colors_dict[player_id],
-                thickness=3)
-            pt_x = cv_bbox[0], cv_bbox[1]
-            pt_y = cv_bbox[2], cv_bbox[3]
-            img_centr = (pt_x + pt_y) / 2
-            cv2.circle(
-                img=img2draw,
-                center=(img_centr),
-                radius=(10),
-                color=players_colors_dict[player_id],
-                thickness=2,
-                lineType=8)
 
         os.makedirs(outdir, exist_ok=True)
         img_out_path = os.path.join(outdir, os.path.basename(img_path))
         cv2.imwrite(img_out_path, img2draw)
         print('out written to', os.path.abspath(img_out_path))
 
-def random_players_colors(max_player_id):
-    players_colors = {}
-    for i in range(max_player_id + 1):
-        players_colors[i] = (
-            random.randint(0, 255),
-            random.randint(0, 255),
-            random.randint(0, 255)
-        )
-    return players_colors
 
 def xywh2x1y1x2y2(xywh_bbox: tuple):
     return (
